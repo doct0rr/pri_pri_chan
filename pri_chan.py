@@ -47,8 +47,8 @@ def webhook():
 
 
 def send_message(recipient_id, message_text):
-
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
+    custReply = "Hello this is an automated bot for the coder hunt,Remove  The facebook 's new verification system to the messenger api and takes 48 hours to verify ( proof in the posts of the page) and does allow me to see users messages until verified"
+    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=custReply))
 
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
