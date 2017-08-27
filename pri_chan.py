@@ -30,8 +30,8 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]
                     recipient_id = messaging_event["recipient"]["id"]
                     message_text = messaging_event["message"]["text"]
-
-                    send_message(sender_id, "Oi themme")
+                    reply = message_text
+                    send_message(sender_id, reply)
 
                 if messaging_event.get("delivery"):
                     pass
