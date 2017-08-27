@@ -14,3 +14,32 @@ def verify():
         return request.args["hub.challenge"], 200
 
     return "Does this shit work", 200
+@app.route('/', methods=['POST'])
+def webhook():
+
+    data = request.get_json()
+    log(data)
+
+    if data["object"] == "page":
+
+        for entry in data["entry"]:
+            for messaging_event in entry["messaging"]:
+
+                if messaging_event.get("message"):
+
+                    sender_id = messaging_event["sender"]["id"]
+                    recipient_id = messaging_event["recipient"]["id"]
+                    message_text = messaging_event["message"]["text"]
+
+                    send_message(sender_id, "Oi themme")
+
+                if messaging_event.get("delivery"):
+                    pass
+
+                if messaging_event.get("optin"):
+                    pass
+
+                if messaging_event.get("postback"):
+                    pass
+
+    return "ok", 200
