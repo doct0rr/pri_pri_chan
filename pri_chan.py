@@ -1,76 +1,37 @@
-import os
-import sys
-import json
-
-import requests
 from flask import Flask, request
+import requests
 
 app = Flask(__name__)
+
+ACCESS_TOKEN = "EAAMLUyKekmABALIShBXTrZB0c17IqxcqTvgYJpV11YJfmCpBTZCc74ZBKynwpgHVieohEX4YvhRue0HrVzUtwhIq93HBfZAVT02J0UZAvpYDvrYvqOpZAhVitZC1Sd82Gj29OAflZAZCLX9lBIZB7ZAeLCoEmCjUPXO4bg6leXQ2ekVKwZDZD"
+VERIFY_TOKEN = "meow_goes_kitty"
+
+def reply(user_id, msg):
+    data = {
+        "recipient": {"id": user_id},
+        "message": {"text": msg}
+    }
+    resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
+    print(resp.content)
+
+
 @app.route('/', methods=['GET'])
-def verify():
-    if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
-        if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
-            return "Verification token mismatch", 403
-        return request.args["hub.challenge"], 200
+def handle_verification():
+    if request.args['hub.verify_token'] == VERIFY_TOKEN:
+        return request.args['hub.challenge']
+    else:
+        return "Invalid verification token"
 
-    return "Does this shit work", 200
+
 @app.route('/', methods=['POST'])
-def webhook():
+def handle_incoming_messages():
+    data = request.json
+    sender = data['entry'][0]['messaging'][0]['sender']['id']
+    message = data['entry'][0]['messaging'][0]['message']['text']
+    reply(sender, message)
 
-    data = request.get_json()
-    log(data)
+    return "ok"
 
-    if data["object"] == "page":
-
-        for entry in data["entry"]:
-            for messaging_event in entry["messaging"]:
-
-                if messaging_event.get("message"):
-
-                    sender_id = messaging_event["sender"]["id"]
-                    recipient_id = messaging_event["recipient"]["id"]
-                    message_text = messaging_event["message"]["text"]
-                    reply = message_text
-                    send_message(sender_id, reply)
-
-                if messaging_event.get("delivery"):
-                    pass
-
-                if messaging_event.get("optin"):
-                    pass
-
-                if messaging_event.get("postback"):
-                    pass
-
-    return "ok", 200
-
-
-
-def send_message(recipient_id, message_text):
-    custReply = "Hello this is an automated bot for the coder hunt,Remove  The facebook 's new verification system to the messenger api and takes 48 hours to verify ( proof in the posts of the page) and does allow me to see users messages until verified"
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=custReply))
-
-    params = {
-        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
-    data = json.dumps({
-        "recipient": {
-            "id": recipient_id
-        },
-        "message": {
-            "text": message_text
-        }
-    })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
-def log(message):
-    print str(message)
-    sys.stdout.flush()
 
 if __name__ == '__main__':
     app.run(debug=True)
