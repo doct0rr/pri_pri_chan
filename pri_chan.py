@@ -71,3 +71,6 @@ def send_message(recipient_id, message_text):
 def log(message):
     print str(message)
     sys.stdout.flush()
+
+if __name__ == '__main__':
+    app.run(debug=True)
