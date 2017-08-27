@@ -1,5 +1,12 @@
-https://www.facebook.com/doctorchan15/
+Name:Karthik Ravi
+id:#009
+email:karthik@nerdorwhat.com
+
+
 Link to the chatBot
+
+https://www.facebook.com/doctorchan15/
+
 Coder Hunt Facebook chat bot
 it is called pri_pri chan
 as a concept pri pri chan (bot) recieves messages and sends
