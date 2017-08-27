@@ -68,3 +68,6 @@ def send_message(recipient_id, message_text):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+def log(message):
+    print str(message)
+    sys.stdout.flush()
